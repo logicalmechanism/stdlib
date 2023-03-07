@@ -23,7 +23,7 @@ pub type Address {
 
 /// Smart-constructor for an `Address` from a verification key hash and a stake credential hash. The address assumes delegation.
 ///
-/// Addresses without delegation should use from_verification_key.
+/// Addresses without delegation should use from_verification_key as it defaults to no delegation rights whatsoever.
 pub fn from_keys(
   vk: Hash<Blake2b_224, VerificationKey>,
   sc: Hash<Blake2b_224, VerificationKey>,
