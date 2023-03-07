@@ -21,6 +21,19 @@ pub type Address {
   stake_credential: Option<StakeCredential>,
 }
 
+/// Smart-constructor for an `Address` from a verification key hash and a stake credential hash. The address assumes delegation.
+///
+/// Addresses without delegation should use from_verification_key.
+pub fn from_keys(
+  vk: Hash<Blake2b_224, VerificationKey>,
+  sc: Hash<Blake2b_224, VerificationKey>,
+) -> Address {
+  Address {
+    payment_credential: VerificationKeyCredential(vk),
+    stake_credential: Some(Inline(VerificationKeyCredential(sc))),
+  }
+}
+
 /// Smart-constructor for an `Address` from a verification key hash. The address has no delegation rights whatsoever.
 pub fn from_verification_key(vk: Hash<Blake2b_224, VerificationKey>) -> Address {
   Address {
