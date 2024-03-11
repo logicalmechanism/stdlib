@@ -107,16 +107,16 @@ pub type StakeCredential =
 pub type PaymentCredential =
   Credential
 
-/// A unique stake pool identifier, as a hash of its owner verification key.
 pub type PoolId =
   Hash<Blake2b_224, VerificationKey>
 
-pub type PubKeyHash =
+pub type VerificationKeyHash =
   Hash<Blake2b_224, VerificationKey>
 
 pub type ScriptHash =
   Hash<Blake2b_224, Script>
 
+// DatumHash is taken as a Datum type so this may just need to change.
 pub type DatumHashDigest =
   Hash<Blake2b_256, Data>
 

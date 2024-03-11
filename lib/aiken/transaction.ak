@@ -7,8 +7,8 @@ use aiken/option
 use aiken/time.{PosixTime}
 use aiken/transaction/certificate.{Certificate}
 use aiken/transaction/credential.{
-  Address, Credential, DatumHashDigest, PubKeyHash, ScriptCredential, ScriptHash,
-  VerificationKeyCredential,
+  Address, Credential, DatumHashDigest, ScriptCredential, ScriptHash,
+  VerificationKeyCredential, VerificationKeyHash,
 }
 use aiken/transaction/governance.{
   GovernanceActionId, ProposalProcedure, Vote, Voter,
@@ -46,7 +46,7 @@ pub type ScriptPurpose {
   /// stake credentials.
   ///
   /// The Int is a 0-based index of the given `TxCert` in `certificates`.
-  Publish(Int, Certificate)
+  Publish { certificate_index: Int, certificate: Certificate }
   /// Voting for a type of voter using a governance action id to vote 
   /// yes / no / abstain inside a transaction.
   ///
@@ -55,7 +55,7 @@ pub type ScriptPurpose {
   /// Used to propose a governance action.
   ///
   /// A 0-based index of the given `ProposalProcedure` in `proposal_procedures`.
-  Proposing(Int, ProposalProcedure)
+  Proposing { proposal_index: Int, proposal: ProposalProcedure }
 }
 
 /// A Cardano `Transaction`, as seen by Plutus scripts.
@@ -75,7 +75,7 @@ pub type Transaction {
   certificates: List<Certificate>,
   withdrawals: Dict<Credential, Lovelace>,
   validity_range: ValidityRange,
-  extra_signatories: List<PubKeyHash>,
+  extra_signatories: List<VerificationKeyHash>,
   redeemers: Dict<ScriptPurpose, Redeemer>,
   datums: Dict<DatumHashDigest, Data>,
   id: TransactionId,
