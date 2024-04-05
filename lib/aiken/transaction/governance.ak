@@ -1,4 +1,3 @@
-use aiken/dict.{Dict}
 use aiken/math/rational.{Rational}
 use aiken/transaction/credential.{
   ColdCommitteeCredential, Credential, DRepCredential, HotCommitteeCredential,
@@ -54,7 +53,7 @@ pub type GovernanceAction {
   HardForkInitiation(Option<GovernanceActionId>, ProtocolVersion)
   //
   TreasuryWithdrawals(
-    Dict<Credential, Lovelace>,
+    List<(Credential, Lovelace)>,
     // Hash of the constitution script
     Option<ScriptHash>,
   )
@@ -66,7 +65,7 @@ pub type GovernanceAction {
     // Committee members to be removed
     List<ColdCommitteeCredential>,
     // Committee members to be added
-    Dict<ColdCommitteeCredential, Int>,
+    List<(ColdCommitteeCredential, Int)>,
     // New quorum
     Rational,
   )

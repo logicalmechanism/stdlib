@@ -73,14 +73,14 @@ pub type Transaction {
   mint: Value,
   // ^ minted value is now back to a value
   certificates: List<Certificate>,
-  withdrawals: Dict<StakeCredential, Lovelace>,
+  withdrawals: List<(StakeCredential, Lovelace)>,
   validity_range: ValidityRange,
   extra_signatories: List<VerificationKeyHash>,
-  redeemers: Dict<ScriptPurpose, Redeemer>,
-  datums: Dict<DatumHashDigest, Data>,
+  redeemers: List<(ScriptPurpose, Redeemer)>,
+  datums: List<(DatumHashDigest, Data)>,
   id: TransactionId,
   // all new fields below for v3
-  votes: Dict<Voter, Dict<GovernanceActionId, Vote>>,
+  votes: List<(Voter, List<(GovernanceActionId, Vote)>)>,
   proposal_procedures: List<ProposalProcedure>,
   current_treasury_amount: Option<Lovelace>,
   treasury_donation: Option<Lovelace>,
@@ -108,15 +108,15 @@ pub fn placeholder() -> Transaction {
     fee: 0,
     mint: value.zero(),
     certificates: [],
-    withdrawals: dict.new(),
+    withdrawals: [],
     validity_range: interval.everything(),
     extra_signatories: [],
-    redeemers: dict.new(),
-    datums: dict.new(),
+    redeemers: [],
+    datums: [],
     id: TransactionId {
       hash: #"0000000000000000000000000000000000000000000000000000000000000000",
     },
-    votes: dict.new(),
+    votes: [],
     proposal_procedures: [],
     current_treasury_amount: None,
     treasury_donation: None,
@@ -206,26 +206,26 @@ pub fn find_datum(
   datums
     |> dict.get(datum_hash)
     |> option.or_try(
-         fn() {
-           outputs
-             |> list.filter_map(
-                  fn(output) {
-                    when output.datum is {
-                      InlineDatum(data) ->
-                        if
-                        blake2b_256(builtin.serialise_data(data)) == datum_hash{
-                        
-                          Some(data)
-                        } else {
-                          None
-                        }
-                      _ -> None
-                    }
-                  },
-                )
-             |> list.head
-         },
-       )
+        fn() {
+          outputs
+            |> list.filter_map(
+                fn(output) {
+                  when output.datum is {
+                    InlineDatum(data) ->
+                      if
+                      blake2b_256(builtin.serialise_data(data)) == datum_hash{
+                      
+                        Some(data)
+                      } else {
+                        None
+                      }
+                    _ -> None
+                  }
+                },
+              )
+            |> list.head
+        },
+      )
 }
 
 /// Find all outputs that are paying into the given script hash, if any. This is useful for
@@ -236,12 +236,12 @@ pub fn find_script_outputs(
 ) -> List<Output> {
   outputs
     |> list.filter(
-         fn(output) {
-           when output.address.payment_credential is {
-             ScriptCredential(addr_script_hash) ->
-               script_hash == addr_script_hash
-             VerificationKeyCredential(_) -> False
-           }
-         },
-       )
+        fn(output) {
+          when output.address.payment_credential is {
+            ScriptCredential(addr_script_hash) ->
+              script_hash == addr_script_hash
+            VerificationKeyCredential(_) -> False
+          }
+        },
+      )
 }
