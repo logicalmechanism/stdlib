@@ -120,14 +120,22 @@ pub type ScriptHash =
 pub type DatumHashDigest =
   Hash<Blake2b_256, Data>
 
-pub type DRepCredential {
-  member: Credential,
-}
+pub type DRepCredential =
+  Credential
 
-pub type ColdCommitteeCredential {
-  member: Credential,
-}
+// pub type DRepCredential {
+//   member: Credential,
+// }
 
-pub type HotCommitteeCredential {
-  member: Credential,
-}
+pub type ColdCommitteeCredential =
+  Credential
+
+// pub type ColdCommitteeCredential {
+//   member: Credential,
+// }
+
+pub type HotCommitteeCredential =
+  Credential
+// pub type HotCommitteeCredential {
+//   member: Credential,
+// }

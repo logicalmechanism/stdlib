@@ -46,7 +46,7 @@ pub type ScriptPurpose {
   /// stake credentials.
   ///
   /// The Int is a 0-based index of the given `TxCert` in `certificates`.
-  Publish { certificate_index: Int, certificate: Certificate }
+  Publish(Int, Certificate)
   /// Voting for a type of voter using a governance action id to vote 
   /// yes / no / abstain inside a transaction.
   ///
@@ -55,7 +55,7 @@ pub type ScriptPurpose {
   /// Used to propose a governance action.
   ///
   /// A 0-based index of the given `ProposalProcedure` in `proposal_procedures`.
-  Proposing { proposal_index: Int, proposal: ProposalProcedure }
+  Proposing(Int, ProposalProcedure)
 }
 
 /// A Cardano `Transaction`, as seen by Plutus scripts.
