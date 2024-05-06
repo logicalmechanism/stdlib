@@ -112,7 +112,7 @@ fn do_diagnostic(self: Data, builder: ByteArray) -> ByteArray {
     {
       // -------- Constr
 
-      let (constr, fields) = un_constr_data(self)
+      let Pair(constr, fields) = un_constr_data(self)
 
       // NOTE: This is fundamentally the same logic for serializing list. However, the compiler
       // doesn't support mutual recursion just yet, so we can't extract that logic in a separate
@@ -159,7 +159,7 @@ fn do_diagnostic(self: Data, builder: ByteArray) -> ByteArray {
             list.foldr(
               elems,
               (#"207d", builder),
-              fn(e: (Data, Data), st: (ByteArray, ByteArray)) {
+              fn(e: Pair<Data, Data>, st: (ByteArray, ByteArray)) {
                 let value =
                   do_diagnostic(e.2nd, append_bytearray(st.1st, st.2nd))
                 (
@@ -201,9 +201,9 @@ fn do_diagnostic(self: Data, builder: ByteArray) -> ByteArray {
 
       bytes
         |> encode_base16(
-             length_of_bytearray(bytes) - 1,
-             append_bytearray(#"27", builder),
-           )
+            length_of_bytearray(bytes) - 1,
+            append_bytearray(#"27", builder),
+          )
         |> append_bytearray(#"6827", _)
     },
   )

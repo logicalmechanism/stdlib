@@ -46,7 +46,8 @@ pub type ScriptPurpose {
   /// stake credentials.
   ///
   /// The Int is a 0-based index of the given `TxCert` in `certificates`.
-  Publish { certificate_index: Int, certificate: Certificate }
+  /// Publish { certificate_index: Int, certificate: Certificate }
+  Publish(Int, Certificate)
   /// Voting for a type of voter using a governance action id to vote 
   /// yes / no / abstain inside a transaction.
   ///
@@ -55,7 +56,8 @@ pub type ScriptPurpose {
   /// Used to propose a governance action.
   ///
   /// A 0-based index of the given `ProposalProcedure` in `proposal_procedures`.
-  Proposing { proposal_index: Int, proposal: ProposalProcedure }
+  /// Proposing { proposal_index: Int, proposal: ProposalProcedure }
+  Proposing(Int, ProposalProcedure)
 }
 
 /// A Cardano `Transaction`, as seen by Plutus scripts.
@@ -206,26 +208,26 @@ pub fn find_datum(
   datums
     |> dict.get(datum_hash)
     |> option.or_try(
-         fn() {
-           outputs
-             |> list.filter_map(
-                  fn(output) {
-                    when output.datum is {
-                      InlineDatum(data) ->
-                        if
-                        blake2b_256(builtin.serialise_data(data)) == datum_hash{
-                        
-                          Some(data)
-                        } else {
-                          None
-                        }
-                      _ -> None
-                    }
-                  },
-                )
-             |> list.head
-         },
-       )
+        fn() {
+          outputs
+            |> list.filter_map(
+                fn(output) {
+                  when output.datum is {
+                    InlineDatum(data) ->
+                      if
+                      blake2b_256(builtin.serialise_data(data)) == datum_hash{
+                      
+                        Some(data)
+                      } else {
+                        None
+                      }
+                    _ -> None
+                  }
+                },
+              )
+            |> list.head
+        },
+      )
 }
 
 /// Find all outputs that are paying into the given script hash, if any. This is useful for
@@ -236,12 +238,12 @@ pub fn find_script_outputs(
 ) -> List<Output> {
   outputs
     |> list.filter(
-         fn(output) {
-           when output.address.payment_credential is {
-             ScriptCredential(addr_script_hash) ->
-               script_hash == addr_script_hash
-             VerificationKeyCredential(_) -> False
-           }
-         },
-       )
+        fn(output) {
+          when output.address.payment_credential is {
+            ScriptCredential(addr_script_hash) ->
+              script_hash == addr_script_hash
+            VerificationKeyCredential(_) -> False
+          }
+        },
+      )
 }
